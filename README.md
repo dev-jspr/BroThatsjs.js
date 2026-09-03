@@ -1,6 +1,5 @@
 # BroThatsjs.js
-If V8 is a Ferrari, this is a shopping cart with a jet engine.  
-A JavaScript interpreter written in Python, powered entirely by questionable decisions.
+If V8 is a Ferrari, this is a shopping cart with a jet engine, a flux capacitor, three illegal modifications, and a personality disorder.
 
 If you want to test this in a browser like a madman, here’s a Python REPL running inside WebAssembly:  
 https://pyodide.org/en/stable/console.html  
