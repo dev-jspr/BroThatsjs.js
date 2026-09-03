@@ -190,9 +190,12 @@ anyone, and I mean anyone, who bases their project off this, is the ABSOLUTE goa
 
 **Python:** "BRO I JUST MET YOU."
 
+
 **BroThatsjs.js:** "And you're already behind."
 
 **JavaScript:** "Welcome to the project."
 
 💀
+**BroThatsjs.js:**"We have added vars"
+**Python:**"ok? yea bro thats IT"
 
