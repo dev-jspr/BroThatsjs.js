@@ -44,3 +44,12 @@ interpret('console.log("He said \\"hi\\"")')
 interpret('console.log("C:\\\\test")')
 # Appreciated stuff
 anyone, and I mean anyone, who bases their project off this, is the ABSOLUTE goat, maybe add a UI or package manager, and if they are good enough, they will be added to this project, well at least I will try.
+# Fun little story
+Python: "bro what is this?"
+
+JavaScript: "console.log(2 + 3)"
+
+Python: "bro can you parse that for me?"
+
+BroThatsjs.js:
+        "yea sure bro, that's JS."
