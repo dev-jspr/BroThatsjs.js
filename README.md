@@ -8,3 +8,4 @@ https://pyodide.org/en/stable/console.html
 Huge thanks to the Pyodide devs for making this chaos possible.
 
 if the snake wanted to be JS, here is the formula 
+ok, this is in super early development PLEASE stay patient so we can add more JS commands and parser features.  
