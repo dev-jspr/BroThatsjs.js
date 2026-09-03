@@ -1,8 +1,9 @@
 exec(r'''
 class Parser:
-    def __init__(self, text):
+    def __init__(self, text, variables):
         self.text = text
         self.pos = 0
+        self.variables = variables
 
     def skip(self):
         while self.pos < len(self.text) and self.text[self.pos].isspace():
@@ -10,13 +11,16 @@ class Parser:
 
     def match(self, char):
         self.skip()
+
         if self.pos < len(self.text) and self.text[self.pos] == char:
             self.pos += 1
             return True
+
         return False
 
     def number(self):
         self.skip()
+
         start = self.pos
         dots = 0
 
@@ -25,11 +29,15 @@ class Parser:
 
             if c.isdigit():
                 self.pos += 1
+
             elif c == ".":
                 dots += 1
+
                 if dots > 1:
                     break
+
                 self.pos += 1
+
             else:
                 break
 
@@ -46,7 +54,10 @@ class Parser:
     def string(self):
         self.skip()
 
-        if self.pos >= len(self.text) or self.text[self.pos] != '"':
+        if self.pos >= len(self.text):
+            return None
+
+        if self.text[self.pos] != '"':
             return None
 
         self.pos += 1
@@ -73,8 +84,9 @@ class Parser:
                 if self.pos >= len(self.text):
                     raise SyntaxError("Unterminated string")
 
-                c = self.text[self.pos]
-                result += escapes.get(c, c)
+                escaped = self.text[self.pos]
+                result += escapes.get(escaped, escaped)
+
             else:
                 result += c
 
@@ -87,21 +99,60 @@ class Parser:
 
         if self.text.startswith("true", self.pos):
             end = self.pos + 4
-            if end == len(self.text) or not (
-                self.text[end].isalnum() or self.text[end] == "_"
+
+            if (
+                end == len(self.text)
+                or not (
+                    self.text[end].isalnum()
+                    or self.text[end] == "_"
+                )
             ):
                 self.pos = end
                 return True
 
         if self.text.startswith("false", self.pos):
             end = self.pos + 5
-            if end == len(self.text) or not (
-                self.text[end].isalnum() or self.text[end] == "_"
+
+            if (
+                end == len(self.text)
+                or not (
+                    self.text[end].isalnum()
+                    or self.text[end] == "_"
+                )
             ):
                 self.pos = end
                 return False
 
         return None
+
+    def identifier(self):
+        self.skip()
+
+        if self.pos >= len(self.text):
+            return None
+
+        first = self.text[self.pos]
+
+        if not (first.isalpha() or first == "_"):
+            return None
+
+        start = self.pos
+        self.pos += 1
+
+        while self.pos < len(self.text):
+            c = self.text[self.pos]
+
+            if c.isalnum() or c == "_":
+                self.pos += 1
+            else:
+                break
+
+        name = self.text[start:self.pos]
+
+        if name not in self.variables:
+            raise NameError(name + " is not defined")
+
+        return self.variables[name]
 
     def primary(self):
         self.skip()
@@ -123,6 +174,10 @@ class Parser:
             return value
 
         value = self.number()
+        if value is not None:
+            return value
+
+        value = self.identifier()
         if value is not None:
             return value
 
@@ -208,12 +263,13 @@ class Parser:
         return value
 
 
-def eval_expr(expr):
-    return Parser(expr).parse()
+def eval_expr(expr, variables):
+    return Parser(expr, variables).parse()
 
 
 def split_arguments(text):
     arguments = []
+
     start = 0
     depth = 0
     in_string = False
@@ -222,14 +278,18 @@ def split_arguments(text):
     for i, c in enumerate(text):
 
         if in_string:
+
             if escaped:
                 escaped = False
+
             elif c == "\\":
                 escaped = True
+
             elif c == '"':
                 in_string = False
 
         else:
+
             if c == '"':
                 in_string = True
 
@@ -237,9 +297,14 @@ def split_arguments(text):
                 depth += 1
 
             elif c == ")":
+
+                if depth == 0:
+                    raise SyntaxError("Unexpected ')'")
+
                 depth -= 1
 
             elif c == "," and depth == 0:
+
                 part = text[start:i].strip()
 
                 if not part:
@@ -258,27 +323,214 @@ def split_arguments(text):
 
     if final:
         arguments.append(final)
+
     elif arguments:
         raise SyntaxError("Missing argument")
 
     return arguments
 
 
-def interpret(code):
-    code = code.strip()
+def valid_identifier(name):
+    if not name:
+        return False
 
-    if not code.startswith("console.log(") or not code.endswith(")"):
-        raise SyntaxError("Unknown statement: " + code)
+    if not (name[0].isalpha() or name[0] == "_"):
+        return False
 
-    inside = code[len("console.log("):-1]
+    for c in name[1:]:
+        if not (c.isalnum() or c == "_"):
+            return False
+
+    return True
+
+
+def interpret_console_log(code, variables):
+    prefix = "console.log("
+
+    if not code.startswith(prefix):
+        raise SyntaxError("Invalid console.log statement")
+
+    if not code.endswith(")"):
+        raise SyntaxError("Invalid console.log statement")
+
+    inside = code[len(prefix):-1]
+
     arguments = split_arguments(inside)
 
-    values = [eval_expr(arg) for arg in arguments]
+    if not arguments:
+        print()
+        return
+
+    values = [
+        eval_expr(argument, variables)
+        for argument in arguments
+    ]
 
     output = " ".join(
-        Parser("").js_string(value)
+        Parser("", variables).js_string(value)
         for value in values
     )
 
     print(output)
+
+
+def interpret_statement(code, variables):
+    code = code.strip()
+
+    if not code:
+        return
+
+    if code.startswith("console.log("):
+        interpret_console_log(code, variables)
+        return
+
+    if code.startswith("let "):
+
+        declaration = code[4:].strip()
+
+        if "=" not in declaration:
+            raise SyntaxError(
+                "Expected '=' in variable declaration"
+            )
+
+        name, expression = declaration.split("=", 1)
+
+        name = name.strip()
+        expression = expression.strip()
+
+        if not valid_identifier(name):
+            raise SyntaxError("Invalid variable name")
+
+        if name in ("true", "false"):
+            raise SyntaxError("Invalid variable name")
+
+        if not expression:
+            raise SyntaxError("Expected value")
+
+        value = eval_expr(expression, variables)
+
+        variables[name] = value
+        return
+
+    if "=" in code:
+
+        name, expression = code.split("=", 1)
+
+        name = name.strip()
+        expression = expression.strip()
+
+        if not valid_identifier(name):
+            raise SyntaxError("Invalid variable name")
+
+        if name not in variables:
+            raise NameError(name + " is not defined")
+
+        if not expression:
+            raise SyntaxError("Expected value")
+
+        value = eval_expr(expression, variables)
+
+        variables[name] = value
+        return
+
+    raise SyntaxError("Unknown statement: " + code)
+
+
+def split_statements(code):
+    statements = []
+
+    start = 0
+    depth = 0
+    in_string = False
+    escaped = False
+
+    for i, c in enumerate(code):
+
+        if in_string:
+
+            if escaped:
+                escaped = False
+
+            elif c == "\\":
+                escaped = True
+
+            elif c == '"':
+                in_string = False
+
+        else:
+
+            if c == '"':
+                in_string = True
+
+            elif c == "(":
+                depth += 1
+
+            elif c == ")":
+
+                if depth == 0:
+                    raise SyntaxError("Unexpected ')'")
+
+                depth -= 1
+
+            elif (c == ";" or c == "\n") and depth == 0:
+
+                part = code[start:i].strip()
+
+                if part:
+                    statements.append(part)
+
+                start = i + 1
+
+    if in_string:
+        raise SyntaxError("Unterminated string")
+
+    if depth != 0:
+        raise SyntaxError("Unbalanced parentheses")
+
+    final = code[start:].strip()
+
+    if final:
+        statements.append(final)
+
+    return statements
+
+
+# Persistent JavaScript environment
+BroThatsJS_VARIABLES = {}
+
+
+def interpret(code):
+    statements = split_statements(code)
+
+    for statement in statements:
+        interpret_statement(
+            statement,
+            BroThatsJS_VARIABLES
+        )
+
+    return BroThatsJS_VARIABLES
+
+
+def reset_variables():
+    BroThatsJS_VARIABLES.clear()
+    print("Variables cleared.")
+
+
+def show_variables():
+    if not BroThatsJS_VARIABLES:
+        print("No variables.")
+        return
+
+    for name, value in BroThatsJS_VARIABLES.items():
+        print(
+            name + " = "
+            + Parser("", BroThatsJS_VARIABLES).js_string(value)
+        )
+
+
+print("BroThatsjs.js variable engine loaded.")
+print("Use: interpret('let x = 10')")
+print("Then: interpret('console.log(x)')")
+print("Use show_variables() to see variables.")
+print("Use reset_variables() to clear them.")
 ''')
