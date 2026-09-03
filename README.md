@@ -41,6 +41,12 @@ interpret('console.log("Hello\\nWorld")')
 interpret('console.log("Hello\\tWorld")')
 interpret('console.log("He said \\"hi\\"")')
 interpret('console.log("C:\\\\test")')
+reset_variables()
+show_variables()
+interpret('console.log("Is ready: " + true)')
+interpret("let x = 10")
+interpret("console.log(x)")
+trust me, there is so much more
 # Appreciated stuff
 anyone, and I mean anyone, who bases their project off this, is the ABSOLUTE goat, maybe add a UI or package manager, and if they are good enough, they will be added to this project, well at least I will try.
 # Fun little story
