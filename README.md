@@ -9,3 +9,36 @@ Huge thanks to the Pyodide devs for making this chaos possible.
 
 if the snake wanted to be JS, here is the formula 
 ok, this is in super early development PLEASE stay patient so we can add more JS commands and parser features.  
+# Tests
+interpret('console.log(10)')
+interpret('console.log(3.14)')
+
+interpret('console.log(10 + 5)')
+interpret('console.log(10 - 5)')
+interpret('console.log(10 * 5)')
+interpret('console.log(10 / 5)')
+interpret('console.log(10 % 3)')
+
+interpret('console.log(2 + 3 * 4)')
+interpret('console.log((2 + 3) * 4)')
+interpret('console.log(2 * (3 + 4))')
+
+interpret('console.log(-10)')
+interpret('console.log(+10)')
+interpret('console.log(-5 + 10)')
+
+interpret('console.log("Hello")')
+interpret('console.log("Hello " + "world")')
+
+interpret('console.log(true)')
+interpret('console.log(false)')
+
+interpret('console.log("Hello", "world")')
+interpret('console.log(10, 20, 30)')
+interpret('console.log("Answer:", 2 + 3 * 4)')
+interpret('console.log("A:", 10, "B:", 20)')
+
+interpret('console.log("Hello\\nWorld")')
+interpret('console.log("Hello\\tWorld")')
+interpret('console.log("He said \\"hi\\"")')
+interpret('console.log("C:\\\\test")')
