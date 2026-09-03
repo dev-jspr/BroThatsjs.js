@@ -42,3 +42,5 @@ interpret('console.log("Hello\\nWorld")')
 interpret('console.log("Hello\\tWorld")')
 interpret('console.log("He said \\"hi\\"")')
 interpret('console.log("C:\\\\test")')
+# Appreciated stuff
+anyone, and I mean anyone, who bases their project off this, is the ABSOULUTE goat, maybe add a UI or package manager, and if they are good enough, they will be added to this project, well at least I will try.
