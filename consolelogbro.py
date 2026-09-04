@@ -528,9 +528,10 @@ def show_variables():
         )
 
 
-print("BroThatsjs.js variable engine loaded.")
+print("BroThatsjs.js JS interpreter loaded.")
 print("Use: interpret('let x = 10')")
 print("Then: interpret('console.log(x)')")
 print("Use show_variables() to see variables.")
 print("Use reset_variables() to clear them.")
+print("yea theres more commands,trust me")
 ''')
