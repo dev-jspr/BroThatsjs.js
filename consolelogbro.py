@@ -1,5 +1,5 @@
-exec(r'''
-class Parser:
+exec(r'''       #a js parser, made by a 11 year old 
+class Parser:   #well, here it is, a simple console.log for now
     def __init__(self, text, variables):
         self.text = text
         self.pos = 0
