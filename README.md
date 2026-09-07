@@ -218,6 +218,7 @@ anyone, and I mean anyone, who bases their project off this, is the ABSOLUTE goa
 💀
 **BroThatsjs.js:**"We have added vars"
 
-**Python:**"ok? yea bro thats IT"
-ok, so for some reason GitHub refuses to set up the python environment and stuff but it works in real python
+**Python:**"ok? yea bro thats IT
+**BroThatsjs.js:**"more coming soon!"
+
 
