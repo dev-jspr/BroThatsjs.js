@@ -534,10 +534,4 @@ print("Then: interpret('console.log(x)')")
 print("Use show_variables() to see variables.")
 print("Use reset_variables() to clear them.")
 print("yea theres more commands,trust me")
-def run_bro(code: str):
-    try:
-        interpret(code)
-        return ""  # console.log prints directly
-    except Exception as e:
-        return "Error: " + str(e)
 ''')
