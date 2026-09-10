@@ -1,5 +1,5 @@
 <img width="2000" height="2000" alt="BroThatsjs" src="https://github.com/user-attachments/assets/3efc4c64-eeb7-4ee8-95ea-6662e937661b" />
-this project goes under the humor-but-also-legal-licence license.
+this project goes under the humor-but-also-legal-licence.
 
 # BroThatsjs.js
 
